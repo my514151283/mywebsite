@@ -80,7 +80,7 @@
             <p>语法正确</p>
             <h5>情感</h5>
             <p>情感合适</p>
-            <h5>共20条</h5>
+            <h5>共20条，第{{ example_id }}条</h5>
         </div>
     </div>
 </div>
@@ -124,7 +124,7 @@
                     success: function (result) {
                         alert(result.msg+"剩余"+result.rest+"条未评分！");
                         if (result.status == "ok")
-                            window.location.href="/index";
+                            window.location.replace("/index");
                     },
             });
         else {
