@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>注册</title>
+    {% include 'css.html' %}
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-4 offset-4" style="margin-top: 10%;">
+            <h1>注册系统</h1>
+            <form id="form">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="username">用户名:</label>
+                    <input type="text" class="form-control" id="username" name="username">
+                </div>
+                <div class="form-group">
+                    <label for="password">密码:</label>
+                    <input type="password" class="form-control" id="password" name="password">
+                </div>
+                <div class="form-group">
+                    <label for="password">重复密码:</label>
+                    <input type="password" class="form-control" id="password_repeat">
+                </div>
+                <div class="form-group">
+                    <button type="button" class="btn btn-primary" id="submit">注册</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+{% include 'script.html' %}
+<script>
+    $("#submit").click(function () {
+        if ($("#password").val()!=$("#password_repeat").val()){
+            alert("两次密码不一致！");
+            return false;
+        }
+        $.ajax({
+                type: "post",
+                dataType: "json",
+                url: "/login/register/register/",
+                data: $('#form').serialize(),
+                success: function (result) {
+                    alert(result.msg);
+                    if (result.status == "ok")
+                        window.location.href="/login/login";
+                },
+        });
+    })
+</script>
+</html>

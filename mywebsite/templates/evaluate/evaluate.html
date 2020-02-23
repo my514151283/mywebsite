@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>评估</title>
+    {% include 'css.html'%}
+</head>
+<body>
+<div class="jumbotron jumbotron-fluid bg-dark text-center text-white" style="margin-bottom: 0px;">
+    <h1>评估</h1>
+</div>
+
+{% include 'index/navbar.html'%}
+
+<div class="container">
+    <div class="row" style="margin-top: 30px;">
+        <div class="col-8 offset-2">
+            <h3>输入</h3>
+            <p style="font-size: 18px;">{{ post }}</p>
+            <h3>生成回复</h3>
+            <p style="font-size: 18px;">{{ result }}</p>
+            <a data-toggle="collapse" href="#hidden" style="font-size: 15px;">展开真实回复</a>
+            <div class="collapse" id="hidden">
+                <h3>真实回复</h3>
+                <p style="font-size: 18px;">{{ response }}</p>
+            </div>
+            <div style="margin-top: 40px;">
+                <h3>评分</h3>
+                <form id="form" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" id="example_id" name="example_id" value="{{ example_id }}">
+                    <div style="margin-top: 20px;">
+                        <div class="btn-group">
+                            <label style="font-size: 20px; line-height: 35px;">内容</label>
+                            <label class="btn" style="font-size: 18px;"><input type="radio" name="content" value="0"/>0分</label>
+                            <label class="btn" style="font-size: 18px;"><input type="radio" name="content" value="1"/>1分</label>
+                            <label class="btn" style="font-size: 18px;"><input type="radio" name="content" value="2"/>2分</label>
+                            <label class="btn" style="font-size: 18px;"><input type="radio" name="content" value="3"/>3分</label>
+                            <label class="btn" style="font-size: 18px;"><input type="radio" name="content" value="4"/>4分</label>
+                            <label class="btn" style="font-size: 18px;"><input type="radio" name="content" value="5"/>5分</label>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="btn-group">
+                            <label style="font-size: 20px; line-height: 35px;">语法</label>
+                            <label class="btn" style="font-size: 18px;"><input type="radio" name="grammar" value="0"/>0分</label>
+                            <label class="btn" style="font-size: 18px;"><input type="radio" name="grammar" value="1"/>1分</label>
+                            <label class="btn" style="font-size: 18px;"><input type="radio" name="grammar" value="2"/>2分</label>
+                            <label class="btn" style="font-size: 18px;"><input type="radio" name="grammar" value="3"/>3分</label>
+                            <label class="btn" style="font-size: 18px;"><input type="radio" name="grammar" value="4"/>4分</label>
+                            <label class="btn" style="font-size: 18px;"><input type="radio" name="grammar" value="5"/>5分</label>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="btn-group">
+                            <label style="font-size: 20px; line-height: 35px;">情感</label>
+                            <label class="btn" style="font-size: 18px;"><input type="radio" name="affect" value="0"/>0分</label>
+                            <label class="btn" style="font-size: 18px;"><input type="radio" name="affect" value="1"/>1分</label>
+                            <label class="btn" style="font-size: 18px;"><input type="radio" name="affect" value="2"/>2分</label>
+                            <label class="btn" style="font-size: 18px;"><input type="radio" name="affect" value="3"/>3分</label>
+                            <label class="btn" style="font-size: 18px;"><input type="radio" name="affect" value="4"/>4分</label>
+                            <label class="btn" style="font-size: 18px;"><input type="radio" name="affect" value="5"/>5分</label>
+                        </div>
+                    </div>
+                    <div class="btn-group" style="margin-top: 20px;">
+                        <button type="submit" class="btn btn-dark" id="first">跳到最前</button>
+                        <button type="submit" class="btn btn-dark" id="pre">上一个</button>
+                        <button type="submit" class="btn btn-dark" id="submit">提交</button>
+                        <button type="submit" class="btn btn-dark" id="next">下一个</button>
+                        <button type="submit" class="btn btn-dark" id="last">跳到最后</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-2">
+            <h5>内容</h5>
+            <p>上下文一致</p>
+            <h5>语法</h5>
+            <p>语法正确</p>
+            <h5>情感</h5>
+            <p>情感合适</p>
+        </div>
+    </div>
+</div>
+
+{% include 'index/tail.html'%}
+</body>
+{% include 'script.html'%}
+<script>
+    $(function () {
+        if ("{{ content }}"!='')
+            $("input[name='content']").eq(Number("{{ content }}")).attr("checked", "checked");
+        if ("{{ grammar }}"!='')
+            $("input[name='grammar']").eq(Number("{{ grammar }}")).attr("checked", "checked");
+        if ("{{ affect }}"!='')
+            $("input[name='affect']").eq(Number("{{ affect }}")).attr("checked", "checked");
+        if ("{{ example_id }}" == 1) {
+            $("#first").attr("disabled", "disabled");
+            $("#pre").attr("disabled", "disabled");
+        }
+        if ("{{ example_id }}" == "{{ num }}") {
+            $("#last").attr("disabled", "disabled");
+            $("#next").attr("disabled", "disabled");
+        }
+    })
+    var check = function() {
+        if (typeof($("input[name='content']:checked").val()) == "undefined")
+            return false;
+        if (typeof($("input[name='grammar']:checked").val()) == "undefined")
+            return false;
+        if (typeof($("input[name='affect']:checked").val()) == "undefined")
+            return false;
+        return true;
+    };
+    $("#submit").click(function () {
+        if (check())
+            $.ajax({
+                    type: "post",
+                    dataType: "json",
+                    url: "/evaluate/submit/",
+                    data: $('#form').serialize(),
+                    success: function (result) {
+                        alert(result.msg+"剩余"+result.rest+"条未评分！");
+                        if (result.status == "ok")
+                            window.location.href="/index";
+                    },
+            });
+        else {
+            alert("未完成评分！");
+            return false;
+        }
+    })
+    $("#first").click(function () {
+        if (!check()) {
+            alert("未完成评分！");
+            return false;
+        }
+        $("#form").attr("action", "/evaluate/first/").submit();
+    })
+    $("#last").click(function () {
+        if (!check()) {
+            alert("未完成评分！");
+            return false;
+        }
+        $("#form").attr("action", "/evaluate/last/").submit();
+    })
+    $("#pre").click(function () {
+        if (!check()) {
+            alert("未完成评分！");
+            return false;
+        }
+        $("#form").attr("action", "/evaluate/pre/").submit();
+    })
+    $("#next").click(function () {
+        if (!check()) {
+            alert("未完成评分！");
+            return false;
+        }
+        $("#form").attr("action", "/evaluate/next/").submit();
+    })
+</script>
+</html>
