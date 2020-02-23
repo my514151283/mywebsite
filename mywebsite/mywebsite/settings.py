@@ -25,7 +25,7 @@ SECRET_KEY = 'k^+0(_d@@b%-y4vn#%_@aa#ck9&v1r*rw^w2-##@+(wxf$pcw-'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['47.103.130.243']
+ALLOWED_HOSTS = ['47.103.130.243', 'localhost']
 
 
 # Application definition
@@ -128,3 +128,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATIC_ROOT = '/home/bxm/mywebsite/mywebsite/static/'
