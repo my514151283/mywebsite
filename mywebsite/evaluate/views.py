@@ -46,6 +46,7 @@ def submit(request):
         evaluation.save()
         rest = len(Example.objects.all()) - len(Evaluation.objects.filter(user=user).all())
         return JsonResponse({'status': 'ok', 'msg': '提交成功！', 'rest': rest})
+    return render(request, 'index/index.html')
 
 
 def turn_to_last(request):
